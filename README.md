@@ -19,8 +19,8 @@ We also provide **a full training and evaluation pipeline for MMDetection models
 
 1. Clone the repository:
    ```bash
-   git clone [TODO: Add link to repo]
-   cd [TODO: Add repo name]
+   git clone https://github.com/Trotts/antarctic-benthic-organism-detection.git
+   cd antarctic-benthic-organism-detection
    ```
 
 2. Run the setup script:
