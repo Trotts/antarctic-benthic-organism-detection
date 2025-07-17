@@ -1,4 +1,3 @@
-
 # Automated Detection of Antarctic Benthic Organisms in High-Resolution In Situ Imagery to Aid Biodiversity Monitoring
 
 <!-- markdownlint-disable MD033 -->
@@ -21,20 +20,7 @@ We also provide **a full training and evaluation pipeline for MMDetection models
 
 ## 📦 Installation
 
-1. Clone the repository:
-
-   ```bash
-   git clone [TODO: Add link to repo]
-   cd [TODO: Add repo name]
-   ```
-
-2. Run the setup script:
-
-   ```bash
-   ./setup.sh
-   ```
-
-This will:
+There are two ways to install this repository: using Git or downloading it as a ZIP file. The recommended method is to use Git. Both options allow you to make use of the `setup.sh` script. This will:
 
 - Install the required dependencies through a mamba environment.
 - Clone and install the MMDetection repository.
@@ -44,6 +30,44 @@ This will:
 - Download the required model weights from the MMDetection model zoo.
 
 An output log, `setup_output.txt`, will be created in the root directory of the repository. This log contains the output of the setup script, including any errors that may have occurred during installation.
+
+### Option 1: Using Git (Recommended)
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/Trotts/antarctic-benthic-organism-detection.git
+   cd antarctic-benthic-organism-detection
+   ```
+
+2. Run the setup script:
+
+   ```bash
+   ./setup.sh
+   ```
+
+### Option 2: Downloading as a ZIP file
+
+1. Download the repository as a ZIP file from this repo's GitHub page using the green "Code" button  at the top of the webpage and selecting "Download ZIP".
+
+   Alternatively, you can download it directly using the command line:
+
+   ```bash
+   wget https://github.com/Trotts/antarctic-benthic-organism-detection/archive/refs/heads/main.zip
+   ```
+
+2. Extract the ZIP file:
+
+   ```bash
+   unzip antarctic-benthic-organism-detection.zip
+   cd antarctic-benthic-organism-detection
+   ```
+
+3. Run the setup script:
+
+   ```bash
+   ./setup.sh
+   ```
 
 ## 📊 Usage
 
