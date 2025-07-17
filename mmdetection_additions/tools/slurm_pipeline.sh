@@ -57,8 +57,8 @@ export MPLCONFIGDIR=${CACHE_PATH}
 # Load openmmlab mamba environment
 echo "Loading mamba environment"
 env_name='wsbd'
-. ${MINIFORGE_PATH}/etc/profile.d/conda.sh
-. ${MINIFORGE_PATH}/etc/profile.d/mamba.sh
+. "${MINIFORGE_PATH}/etc/profile.d/conda.sh"
+. "${MINIFORGE_PATH}/etc/profile.d/mamba.sh"
 mamba activate ${env_name}
 
 # Determine the name given to the dataset by build_dataset based on the values above
@@ -83,8 +83,8 @@ if [ ! -d $test_dir_src ]; then
     mkdir $test_dir_src
 fi
 
-if [ ! -d $src ]; then
-    mkdir $src
+if [ ! -d "$src" ]; then
+    mkdir "$src"
 fi
 
 whole_images_src="${whole_data_src}/images" 
@@ -107,10 +107,10 @@ patch_dataset_src="${patches_dir}/${model_name}/annotations"
 echo "Generating config"
 if [ $pretrained = True ]; then
     python -u ${REPOSITORY_PATH}/mmdetection/tools/build_config.py\
-        $model_name_with_augs\
-        $patch_dataset_src\
+        "$model_name_with_augs"\
+        "$patch_dataset_src"\
         $patch_size\
-        $src\
+        "$src"\
         --batch-size $batch_size\
         --augmentation $augs\
         --architecture $architecture\
@@ -118,10 +118,10 @@ if [ $pretrained = True ]; then
 fi
 if [ $pretrained = False ]; then
     python -u ${REPOSITORY_PATH}/mmdetection/tools/build_config.py\
-        $model_name_with_augs\
-        $patch_dataset_src\
+        "$model_name_with_augs"\
+        "$patch_dataset_src"\
         $patch_size\
-        $src\
+        "$src"\
         --batch-size $batch_size\
         --augmentation $augs\
         --architecture $architecture
@@ -141,24 +141,24 @@ echo "Testing model - patch form"
 best_full=$(find $src -name "best_coco_bbox_mAP_epoch*.pth" | sort -n | tail -n 1)
 
 python -u ${REPOSITORY_PATH}/mmdetection/tools/test.py\
-    $config\
-    $best_full\
-    --out $src/test/results.pkl
+    "$config"\
+    "$best_full"\
+    --out "$src"/test/results.pkl
 
 ############ VISUALISE PATCH RESULTS #############
 echo "Visualising result - patch form"
 python -u ${REPOSITORY_PATH}/mmdetection/tools/analysis_tools/analyze_results.py\
-    $config\
-    $src/test/results.pkl\
-    $src/test/visualizations/\
+    "$config"\
+    "$src"/test/results.pkl\
+    "$src"/test/visualizations/\
     --show-score-thr $conf_threshold
 
 ############# CONFUSION MATRIX - PATCH FORM #############
 echo "Confusion matrix - patch form"
 python -u ${REPOSITORY_PATH}/mmdetection/tools/confusion_matrix_abundance_ordered.py\
-    $config\
-    $src/test/results.pkl\
-    $src/test/\
+    "$config"\
+    "$src"/test/results.pkl\
+    "$src"/test/\
     --score-thr $conf_threshold\
     --abundance-ordering $abundance
 
@@ -170,8 +170,8 @@ whole_image_test_output_folder_name='test'
 sahi_nmm_folder_name="${whole_image_test_output_folder_name}_sahi"
 
 python -u ${REPOSITORY_PATH}/mmdetection/tools/sahi_eval.py\
-    $config\
-    $best_full\
+    "$config"\
+    "$best_full"\
     $whole_images_src\
     $whole_images_test_json_src\
     $patch_size\
@@ -187,8 +187,8 @@ echo "Confusion matrix - whole image form without SAHI"
 non_sahi_folder_name="${whole_image_test_output_folder_name}_non_sahi"
 
 python -u ${REPOSITORY_PATH}/mmdetection/tools/non_sahi_eval.py\
-    $config\
-    $best_full\
+    "$config"\
+    "$best_full"\
     $whole_images_src\
     $whole_images_test_json_src\
     $patch_size\

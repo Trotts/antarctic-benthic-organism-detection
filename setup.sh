@@ -6,7 +6,7 @@ set -o pipefail
 
 PROJECT_DIR="."
 PYTHON_VERSION="3.8"
-ENVIRONMENT="environment/environment.yml"
+ENVIRONMENT="environment.yml"
 ENV_NAME="wsbd"
 SRC="mmdetection_additions"
 DST="mmdetection"
@@ -22,8 +22,8 @@ pushd "$PROJECT_DIR"
 
 echo "Creating conda environment '$ENV_NAME' with Python $PYTHON_VERSION..."
 mamba create -f $ENVIRONMENT -y
-. $(conda info --base)/etc/profile.d/conda.sh
-. $(conda info --base)/etc/profile.d/mamba.sh
+. "$(conda info --base)/etc/profile.d/conda.sh"
+. "$(conda info --base)/etc/profile.d/mamba.sh"
 mamba activate $ENV_NAME
 
 echo "Installing MMDetection..."
@@ -47,11 +47,11 @@ echo "NOT YET IMPLEMENTED AS DATA IS NOT PUBLICLY AVAILABLE YET"
 echo "Downloading the required initial model weights from the MMDetection model zoo..."
 mkdir -p "openmmlab_pretrained_weights"
 
-# Faster R-CNN: Need to decode the URL to get the correct file name, as downloaded from an older MMD repo:
-url="https://cdn-model.openxlab.org.cn/models%2Fweight%2Fmmdetection%2FFaster+R-CNN%2Ffaster_rcnn_r50_fpn_1x_coco_20200130-047c8118.pth"
-decoded_url=$(printf '%b' "${url//%/\\x}")
-filename="${decoded_url##*/}"
-wget -O "openmmlab_pretrained_weights/$filename" "$url"
+# Faster R-CNN: The URL does not have the file name encoded, so rename it after downloading:
+url="https://download.openxlab.org.cn/models/mmdetection/FasterR-CNN/weight/faster-rcnn_r50_fpn_1x_coco"
+filename="faster_rcnn_r50_fpn_1x_coco_20200130-047c8118.pth"
+wget -P "openmmlab_pretrained_weights" "$url"
+mv "openmmlab_pretrained_weights/faster-rcnn_r50_fpn_1x_coco" "openmmlab_pretrained_weights/$filename"
 
 wget -P "openmmlab_pretrained_weights" https://download.openmmlab.com/mmdetection/v2.0/retinanet/retinanet_r50_fpn_1x_coco/retinanet_r50_fpn_1x_coco_20200130-c2398f9e.pth
 wget -P "openmmlab_pretrained_weights" https://download.openmmlab.com/mmdetection/v2.0/cascade_rcnn/cascade_rcnn_r50_fpn_1x_coco/cascade_rcnn_r50_fpn_1x_coco_20200316-3dc56deb.pth

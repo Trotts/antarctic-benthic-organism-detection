@@ -45,8 +45,8 @@ export MPLCONFIGDIR=${CACHE_PATH}
 # Load openmmlab mamba environment
 echo "Loading mamba environment"
 env_name='wsbd'
-. ${MINIFORGE_PATH}/etc/profile.d/conda.sh
-. ${MINIFORGE_PATH}/etc/profile.d/mamba.sh
+. "${MINIFORGE_PATH}/etc/profile.d/conda.sh"
+. "${MINIFORGE_PATH}/etc/profile.d/mamba.sh"
 mamba activate ${env_name}
 
 # Run inference with the best weights

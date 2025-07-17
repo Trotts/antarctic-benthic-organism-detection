@@ -1,27 +1,32 @@
+"MMDetection scheduler config used for training the Cascade R-CNN model during WSBD experimentation."
+
 NUM_EPOCHS = 200
 
 # training schedule for 1x
-train_cfg = dict(type='EpochBasedTrainLoop', max_epochs=NUM_EPOCHS, val_interval=1)
-val_cfg = dict(type='ValLoop')
-test_cfg = dict(type='TestLoop')
+train_cfg = dict(type="EpochBasedTrainLoop", max_epochs=NUM_EPOCHS, val_interval=1)
+val_cfg = dict(type="ValLoop")
+test_cfg = dict(type="TestLoop")
 
 # learning rate
 param_scheduler = [
     dict(
-        type='LinearLR', start_factor=0.001, by_epoch=False, begin=0, end=NUM_EPOCHS/2),
+        type="LinearLR", start_factor=0.001, by_epoch=False, begin=0, end=NUM_EPOCHS / 2
+    ),
     dict(
-        type='MultiStepLR',
+        type="MultiStepLR",
         begin=0,
-        end = NUM_EPOCHS,
+        end=NUM_EPOCHS,
         by_epoch=True,
         milestones=[100, 150],
-        gamma=0.1)
+        gamma=0.1,
+    ),
 ]
 
 # optimizer
 optim_wrapper = dict(
-    type='OptimWrapper',
-    optimizer=dict(type='SGD', lr=0.02, momentum=0.9, weight_decay=0.0001))
+    type="OptimWrapper",
+    optimizer=dict(type="SGD", lr=0.02, momentum=0.9, weight_decay=0.0001),
+)
 
 # Default setting for scaling LR automatically
 #   - `enable` means enable scaling LR automatically

@@ -12,109 +12,140 @@ import albumentations
 import pickle
 import os
 
-PROJECT_ROOT = '/PATH/TO/YOUR/REPOSITORY'
-MMDETECTION_ROOT = PROJECT_ROOT + '/mmdetection'
-WEIGHTS_ROOT = PROJECT_ROOT + '/openmmlab_pretrained_weights'
+PROJECT_ROOT = "/PATH/TO/YOUR/REPOSITORY"
+MMDETECTION_ROOT = PROJECT_ROOT + "/mmdetection"
+WEIGHTS_ROOT = PROJECT_ROOT + "/openmmlab_pretrained_weights"
+
 
 def parse_args():
     """
     Parses command-line arguments.
-    
+
     Returns:
         argparse.Namespace: Parsed command-line arguments.
     """
-    parser = argparse.ArgumentParser(description='Build an MMDetect config file for a given Faster R-CNN model')
-    parser.add_argument('model_name', type=str, help='Name of the model')
-    parser.add_argument('patched_dataset_src', type=str, help='Path to the patched dataset dir')
-    parser.add_argument('patch_size', type=str, help='Patch size used for training')
-    parser.add_argument('out_dir', type=str, help='Output directory to store files')
-    parser.add_argument('--batch-size', default=64, type=int, help='Batch size')
-    parser.add_argument('--pretrained', action='store_true', default = False, help='Initialise from MSCOCO weights')
-    parser.add_argument('--augmentation', type=str, default=None, help='Augmentation set to apply. Options: "pixel", "spatial", "both". Default: None')
-    parser.add_argument('--architecture', type=str, default='faster_rcnn', help='Architecture to use. Default: faster_rcnn')
-    parser.add_argument('--distributed', action='store_true', default = False, help='Set to True for distributed training')
-            
+    parser = argparse.ArgumentParser(
+        description="Build an MMDetect config file for a given Faster R-CNN model"
+    )
+    parser.add_argument("model_name", type=str, help="Name of the model")
+    parser.add_argument(
+        "patched_dataset_src", type=str, help="Path to the patched dataset dir"
+    )
+    parser.add_argument("patch_size", type=str, help="Patch size used for training")
+    parser.add_argument("out_dir", type=str, help="Output directory to store files")
+    parser.add_argument("--batch-size", default=64, type=int, help="Batch size")
+    parser.add_argument(
+        "--pretrained",
+        action="store_true",
+        default=False,
+        help="Initialise from MSCOCO weights",
+    )
+    parser.add_argument(
+        "--augmentation",
+        type=str,
+        default=None,
+        help='Augmentation set to apply. Options: "pixel", "spatial", "both". Default: None',
+    )
+    parser.add_argument(
+        "--architecture",
+        type=str,
+        default="faster_rcnn",
+        help="Architecture to use. Default: faster_rcnn",
+    )
+    parser.add_argument(
+        "--distributed",
+        action="store_true",
+        default=False,
+        help="Set to True for distributed training",
+    )
+
     args = parser.parse_args()
     return args
+
 
 def collect_env():
     """Collect the information of the running environments."""
     env_info = collect_base_env()
-    env_info['MMDetection'] = f'{mmdet.__version__}+{get_git_hash()[:7]}'
+    env_info["MMDetection"] = f"{mmdet.__version__}+{get_git_hash()[:7]}"
     return env_info
 
+
 for key, value in collect_env().items():
-    print(f'{key}: {value}')
-    
+    print(f"{key}: {value}")
+
+
 def main():
     args = parse_args()
 
     dataset_src = args.patched_dataset_src
-    
-    train_src = dataset_src + '/dataset_train_patches.json'
-    val_src = dataset_src + '/dataset_val_patches.json'
-    test_src = dataset_src + '/dataset_test_patches.json'
-    data_root = dataset_src.replace('annotations', '')
-    data_prefix = data_root + 'images/'
-    
+
+    train_src = dataset_src + "/dataset_train_patches.json"
+    val_src = dataset_src + "/dataset_val_patches.json"
+    test_src = dataset_src + "/dataset_test_patches.json"
+    data_root = dataset_src.replace("annotations", "")
+    data_prefix = data_root + "images/"
+
     # Change number of epochs in configs/_base_/schedules/schedule_1x.py
     BATCH_SIZE = args.batch_size
-    IMG_SIZE = tuple(map(int, args.patch_size.replace('(', '').replace(')', '').split(',')))
+    IMG_SIZE = tuple(
+        map(int, args.patch_size.replace("(", "").replace(")", "").split(","))
+    )
 
     # Get classes from COCO
-    with open(train_src, 'r') as f:
+    with open(train_src, "r") as f:
         train_data = json.load(f)
         f.close()
-    classes = [x['name'] for x in train_data['categories']]
+    classes = [x["name"] for x in train_data["categories"]]
 
     ## Get an RGB palette 0-255 for each class
     def get_rgb_palette(n):
-        cmap = plt.cm.get_cmap('hsv', n)
+        cmap = plt.cm.get_cmap("hsv", n)
         palette = [cmap(i) for i in range(n)]
-        return [(int(x[0]*255), int(x[1]*255), int(x[2]*255)) for x in palette]
+        return [(int(x[0] * 255), int(x[1] * 255), int(x[2] * 255)) for x in palette]
 
     palette = get_rgb_palette(len(classes))
-    
-    keymap = {
-            'img': 'image',
-            'gt_bboxes': 'bboxes'
-        }
 
-    data={
-        'train':{
-            'classes':classes
-        }, 
-        'val':{
-            'classes':classes
-        }, 
-        'test':{
-            'classes':classes
-        }, 
-    } 
-    
+    keymap = {"img": "image", "gt_bboxes": "bboxes"}
+
+    data = {
+        "train": {"classes": classes},
+        "val": {"classes": classes},
+        "test": {"classes": classes},
+    }
+
     if args.augmentation:
-        if args.augmentation == 'pixel':
+        if args.augmentation == "pixel":
             albu_transforms = [
-                dict(type='MotionBlur', p=0.5),
-                dict(type='RandomBrightnessContrast', p=0.5),
-                dict(type='RandomShadow', p=0.5)
+                dict(type="MotionBlur", p=0.5),
+                dict(type="RandomBrightnessContrast", p=0.5),
+                dict(type="RandomShadow", p=0.5),
             ]
-        elif args.augmentation == 'spatial':
+        elif args.augmentation == "spatial":
             albu_transforms = [
-                dict(type='HorizontalFlip', p=0.5),
-                dict(type='VerticalFlip', p=0.5),
-                dict(type='PixelDropout', p=0.5),
-                dict(type='RandomSizedBBoxSafeCrop', p=0.5, height=IMG_SIZE[0], width=IMG_SIZE[1])
+                dict(type="HorizontalFlip", p=0.5),
+                dict(type="VerticalFlip", p=0.5),
+                dict(type="PixelDropout", p=0.5),
+                dict(
+                    type="RandomSizedBBoxSafeCrop",
+                    p=0.5,
+                    height=IMG_SIZE[0],
+                    width=IMG_SIZE[1],
+                ),
             ]
-        elif args.augmentation == 'both':
+        elif args.augmentation == "both":
             albu_transforms = [
-                dict(type='MotionBlur', p=0.5),
-                dict(type='RandomBrightnessContrast', p=0.5),
-                dict(type='RandomShadow', p=0.5),
-                dict(type='HorizontalFlip', p=0.5),
-                dict(type='VerticalFlip', p=0.5),
-                dict(type='PixelDropout', p=0.5),
-                dict(type='RandomSizedBBoxSafeCrop', p=0.5, height=IMG_SIZE[0], width=IMG_SIZE[1])
+                dict(type="MotionBlur", p=0.5),
+                dict(type="RandomBrightnessContrast", p=0.5),
+                dict(type="RandomShadow", p=0.5),
+                dict(type="HorizontalFlip", p=0.5),
+                dict(type="VerticalFlip", p=0.5),
+                dict(type="PixelDropout", p=0.5),
+                dict(
+                    type="RandomSizedBBoxSafeCrop",
+                    p=0.5,
+                    height=IMG_SIZE[0],
+                    width=IMG_SIZE[1],
+                ),
             ]
         else:
             raise ValueError(f"Invalid augmentation option: {args.augmentation}")
@@ -122,11 +153,12 @@ def main():
         albu_transforms = []
 
     test_evaluator = dict(
-        type='CocoMetric',
-        metric='bbox',
+        type="CocoMetric",
+        metric="bbox",
         format_only=False,
         ann_file=test_src,
-        outfile_prefix=args.out_dir+'/test/'+args.model_name+'_patches',)
+        outfile_prefix=args.out_dir + "/test/" + args.model_name + "_patches",
+    )
 
     data_loader_config = f"""
     
@@ -254,31 +286,37 @@ test_dataloader = dict(
 
 test_evaluator = {test_evaluator}
     """
-    
+
     if args.distributed:
-        data_loader_config = data_loader_config + f"""
+        data_loader_config = (
+            data_loader_config
+            + f"""
 data=dict(samples_per_gpu=1, workers_per_gpu=1, train=dict(classes=classes),  val=dict(classes=classes),  test=dict(classes=classes))
         """
+        )
     else:
-        data_loader_config = data_loader_config + f"""
+        data_loader_config = (
+            data_loader_config
+            + f"""
 data=dict(train=dict(classes=classes),  val=dict(classes=classes),  test=dict(classes=classes))
-        """      
+        """
+        )
 
-    data_loader_src = os.path.join(args.out_dir, f'{args.model_name}_data_loader.py')
+    data_loader_src = os.path.join(args.out_dir, f"{args.model_name}_data_loader.py")
     print(f"Data loader to be saved at {data_loader_src}")
-    with open(data_loader_src, 'w') as f:
+    with open(data_loader_src, "w") as f:
         f.write(data_loader_config)
-        f.close()   
-        
+        f.close()
+
     model_architectures = {
-        'faster_rcnn': 'faster-rcnn_r50_fpn_25_class_benthic.py',
-        'retinanet': 'retinanet_r50_fpn_25_class_benthic.py',
-        'cascade_rcnn': 'cascade-rcnn_r50_fpn_25_class_benthic.py',
-        'deformable-detr': 'deformable-detr_r50_16xb2-50e_25_class_benthic.py',
-        'dino_r50': 'dino-4scale_r50_8xb2-12e_25_class_benthic.py',
-        'codetr': 'conditional-detr_r50_8xb2-50e_25_class_benthic.py'
+        "faster_rcnn": "faster-rcnn_r50_fpn_25_class_benthic.py",
+        "retinanet": "retinanet_r50_fpn_25_class_benthic.py",
+        "cascade_rcnn": "cascade-rcnn_r50_fpn_25_class_benthic.py",
+        "deformable-detr": "deformable-detr_r50_16xb2-50e_25_class_benthic.py",
+        "dino_r50": "dino-4scale_r50_8xb2-12e_25_class_benthic.py",
+        "codetr": "conditional-detr_r50_8xb2-50e_25_class_benthic.py",
     }
-    
+
     model_config = f"""
 _base_ = [
     '{MMDETECTION_ROOT}/configs/_base_/models/{model_architectures[args.architecture]}',
@@ -287,27 +325,31 @@ _base_ = [
     '{MMDETECTION_ROOT}/configs/_base_/default_runtime.py'
 ]
     """
-    
+
     model_pretrained_weights = {
-        'faster_rcnn': 'faster_rcnn_r50_fpn_1x_coco_20200130-047c8118.pth',
-        'retinanet': 'retinanet_r50_fpn_1x_coco_20200130-c2398f9e.pth',
-        'cascade_rcnn': 'cascade_rcnn_r50_fpn_1x_coco_20200316-3dc56deb.pth',
-        'deformable-detr': 'deformable-detr_r50_16xb2-50e_coco_20221029_210934-6bc7d21b.pth',
-        'dino_r50': 'dino-4scale_r50_improved_8xb2-12e_coco_20230818_162607-6f47a913.pth',
-        'codetr': 'conditional-detr_r50_8xb2-50e_coco_20221121_180202-c83a1dc0.pth'
+        "faster_rcnn": "faster_rcnn_r50_fpn_1x_coco_20200130-047c8118.pth",
+        "retinanet": "retinanet_r50_fpn_1x_coco_20200130-c2398f9e.pth",
+        "cascade_rcnn": "cascade_rcnn_r50_fpn_1x_coco_20200316-3dc56deb.pth",
+        "deformable-detr": "deformable-detr_r50_16xb2-50e_coco_20221029_210934-6bc7d21b.pth",
+        "dino_r50": "dino-4scale_r50_improved_8xb2-12e_coco_20230818_162607-6f47a913.pth",
+        "codetr": "conditional-detr_r50_8xb2-50e_coco_20221121_180202-c83a1dc0.pth",
     }
-    
+
     if args.pretrained:
-        model_config = model_config + f"""\n\n
+        model_config = (
+            model_config
+            + f"""\n\n
 # load model from COCO
 load_from = '{WEIGHTS_ROOT}/{model_pretrained_weights[args.architecture]}'
         """
-        
-    config_src = os.path.join(args.out_dir, f'{args.model_name}_config.py')
+        )
+
+    config_src = os.path.join(args.out_dir, f"{args.model_name}_config.py")
     print(f"Model config to be saved at {config_src}")
-    with open(config_src, 'w') as f:
+    with open(config_src, "w") as f:
         f.write(model_config)
         f.close()
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()
