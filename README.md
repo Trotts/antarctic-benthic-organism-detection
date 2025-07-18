@@ -71,7 +71,7 @@ An output log, `setup_output.txt`, will be created in the root directory of the 
 
 ## 📊 Usage
 
-The below instructions assume you are using a SLURM cluster. If you are not using SLURM, you can run the scripts called within the `.sh` files directly in your terminal.
+The below instructions assume you are using a SLURM cluster. If you are not using SLURM, you can run the scripts called within the `.sh` files directly in your terminal, or using `/bin/bash XXX.sh`, where `XXX.sh` is the script you wish to run. You may need to edit the scripts to set the correct paths for your environment.
 
 ## ⚡ Inference
 
