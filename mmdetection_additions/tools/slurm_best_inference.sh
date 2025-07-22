@@ -14,14 +14,10 @@
 #SBATCH --error=job_log/run_best_inference.%j.%N.err 
 #SBATCH --job-name=run_best_inference
 
-# Path to the repository root directory
-REPOSITORY_PATH='/PATH/TO/YOUR/REPOSITORY'
-# Path to a visible cache for mmdetection, mmengine, etc.
-CACHE_PATH='/PATH/TO/YOUR/CACHE'
-# Miniforge3 installation path
-MINIFORGE_PATH='/PATH/TO/YOUR/MINIFORGE3'
 # Path to an input image for inference
 INPUT_IMAGE_PATH='/PATH/TO/YOUR/INPUT/IMAGE'
+
+source paths.env
 
 # Path to the config file for the best model
 config_path="${REPOSITORY_PATH}/mmdetection/configs/_base_/models/best_config.py"

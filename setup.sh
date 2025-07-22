@@ -27,7 +27,7 @@ mamba create -f $ENVIRONMENT -y
 mamba activate $ENV_NAME
 
 echo "Installing MMDetection..."
-git clone https://github.com/open-mmlab/mmdetection.git
+git clone --depth 1 --branch v3.3.0 https://github.com/open-mmlab/mmdetection.git
 cd mmdetection
 pip install -e . -v
 cd ..
@@ -62,7 +62,7 @@ wget -P "openmmlab_pretrained_weights" https://download.openmmlab.com/mmdetectio
 echo "Finished!"
 echo "To activate the created environment, run: mamba activate $ENV_NAME"
 echo "Run code from the 'mmdetection' directory, not the 'mmdetection_additions' directory."
-echo "Before running any code, please make sure to modify the file paths as required by the scripts: slurm_best_inference.sh, slurm_pipeline.sh."
+echo "Before running any code, please make sure to modify the file paths at: /mmdetection/tools/paths.env"
 
 # Return to the original directory
 popd

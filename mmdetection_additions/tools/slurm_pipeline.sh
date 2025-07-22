@@ -15,21 +15,16 @@
 #SBATCH --error=job_log/run_pipeline.%j.%N.err 
 #SBATCH --job-name=run_pipeline
 
-# Path to the repository root directory
-REPOSITORY_PATH='/PATH/TO/YOUR/REPOSITORY'
-# Path to a visible cache for mmdetection, mmengine, etc.
-CACHE_PATH='/PATH/TO/YOUR/CACHE'
-# Miniforge3 installation path
-MINIFORGE_PATH='/PATH/TO/YOUR/MINIFORGE3'
+source paths.env
 
 # Path to parent dir for saving models, configs, logs, etc.
 work_dir_path="${REPOSITORY_PATH}/output"
 # Path to the patches directory
-patches_dir="${REPOSITORY_PATH}/patches" # Path to the patches directory
+patches_dir="${REPOSITORY_PATH}/patches"
 # Path to the whole data directory (images and annotations parent)
-whole_data_src="${REPOSITORY_PATH}/data" # Path to the whole data directory (images and annotations parent)
+whole_data_src="${REPOSITORY_PATH}/data" 
 # Path to the abundance ordering file
-abundance="${REPOSITORY_PATH}/abundance_ordering/abundance_ordering.pkl" # Path to the abundance ordering file
+abundance="${REPOSITORY_PATH}/abundance_ordering/abundance_ordering.pkl" 
 
 # Name of the directory to save models, configs, logs, etc. in the work_dir_path
 tests_dir_name='pipeline'

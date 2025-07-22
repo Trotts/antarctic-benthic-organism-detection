@@ -11,11 +11,25 @@ from mmengine.utils.dl_utils import collect_env as collect_base_env
 import albumentations
 import pickle
 import os
+import re
 
-PROJECT_ROOT = "/PATH/TO/YOUR/REPOSITORY"
-MMDETECTION_ROOT = PROJECT_ROOT + "/mmdetection"
-WEIGHTS_ROOT = PROJECT_ROOT + "/openmmlab_pretrained_weights"
-
+def load_env_file(filepath):
+    """Load environment variables from a shell-style .env file"""
+    env_vars = {}
+    with open(filepath, 'r') as f:
+        for line in f:
+            line = line.strip()
+            # Skip comments and empty lines
+            if line.startswith('#') or not line:
+                continue
+            # Parse KEY=VALUE or KEY='VALUE' or KEY="VALUE"
+            match = re.match(r'^([A-Z_][A-Z0-9_]*)=(.*)$', line)
+            if match:
+                key, value = match.groups()
+                # Remove quotes if present
+                value = value.strip('\'"')
+                env_vars[key] = value
+    return env_vars
 
 def parse_args():
     """
@@ -76,6 +90,12 @@ for key, value in collect_env().items():
 
 def main():
     args = parse_args()
+
+    # Load environment variables
+    env_vars = load_env_file("./paths.env")
+    REPOSITORY_PATH = env_vars["REPOSITORY_PATH"]
+    MMDETECTION_ROOT = REPOSITORY_PATH + "/mmdetection"
+    WEIGHTS_ROOT = REPOSITORY_PATH + "/openmmlab_pretrained_weights"
 
     dataset_src = args.patched_dataset_src
 

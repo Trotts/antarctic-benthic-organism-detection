@@ -73,32 +73,42 @@ An output log, `setup_output.txt`, will be created in the root directory of the 
 
 The below instructions assume you are using a SLURM cluster. If you are not using SLURM, you can run the scripts called within the `.sh` files directly in your terminal, or using `/bin/bash XXX.sh`, where `XXX.sh` is the script you wish to run. You may need to edit the scripts to set the correct paths for your environment.
 
+Before using this code base, please familiarise yourself with the MMDetection framework, especially the use of config files for model building, training, and inference. The [MMDetection documentation](https://mmdetection.readthedocs.io/en/latest/) is a good place to start.
+
 ## ⚡ Inference
 
 To run inference using the optimal model trained on the Weddell Sea Benthic Dataset:
 
-1. Edit the `mmdetection/tools/slurm_best_inference.sh` file to set the correct sbatch instructions and paths for your environment (lines 7-24).
+1. Edit `mmdetection/tools/paths.env` to set the correct paths for your environment. This file is used by `mmdetection/tools/slurm_best_inference.sh` to set the required paths.
 
-2. Submit the job to SLURM:
+2. Edit `mmdetection/tools/slurm_best_inference.sh` to set the correct sbatch instructions (lines 7-15).
+
+3. Set the path to the input image for inference in `mmdetection/tools/slurm_best_inference.sh` (line 18).
+
+4. (Optional) If you have previously trained your own model and wish to use it here, you will also need to change the config and weights paths in `mmdetection/tools/slurm_best_inference.sh` (lines 23-24), as well as setting the model parameters (lines 28-32). The defaults for these lines are set to the optimal model trained on the Weddell Sea Benthic Dataset.
+
+5. Submit the job to SLURM:
 
 ```bash
-sbatch ./mmdetection/tools/slurm_best_inference.sh
+cd ./mmdetection/tools/
+sbatch slurm_best_inference.sh
 ```
 
 ## 🏋️ Training
 
 To run a full training and evaluation pipeline using the Weddell Sea Benthic Dataset:
 
-1. Edit the `mmdetection/tools/slurm_pipeline.sh` file to set the correct sbatch instructions and paths for your environment (lines 8-23).
+1. Edit `mmdetection/tools/paths.env` to set the correct paths for your environment. This file is used by `mmdetection/tools/slurm_pipeline.sh` and `mmdetection/tools/build_config.py` to set the required paths.
 
-2. Set the parameters you wish use for training in the `mmdetection/tools/slurm_pipeline.sh` file (lines 34-48).
+2. Edit `mmdetection/tools/slurm_pipeline.sh` to set the correct sbatch instructions (lines 8-16).
 
-3. Edit `mmdetection/tools/build_config.py` to set the path for the project root (line 15).
+3. Set the parameters you wish use for training in the `mmdetection/tools/slurm_pipeline.sh` file (lines 33-43).
 
 4. Submit the job to SLURM:
 
 ```bash
-sbatch ./mmdetection/tools/slurm_pipeline.sh
+cd ./mmdetection/tools/
+sbatch slurm_pipeline.sh
 ```
 
 ### 🐙 Training on your own dataset
@@ -145,7 +155,7 @@ You can then use the `mmdetection/tools/slurm_pipeline.sh` script to generate a 
 
 The following compute and storage resources are recommended:
 
-- **Compute**: 1 x NVIDIA A100 GPU, ideally accessed via a SLURM cluster. The training and inference scripts are designed to run on a SLURM cluster, but can be adapted for local use.
+- **Compute**: 1 x NVIDIA A100 GPU or better with at least 6GB of free memory, ideally accessed via a SLURM cluster. The training and inference scripts are designed to run on a SLURM cluster, but can be adapted for local use.
 - **Storage**: At least 3 GB of free disk space for the WSBD, model weights, and code base. Additional space may be required for model outputs and training datasets, depending if you change the patch dataset parameters and/or use your own dataset.
 
 ## 📂 Data Access

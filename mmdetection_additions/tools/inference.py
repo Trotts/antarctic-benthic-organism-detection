@@ -176,7 +176,7 @@ def extract_classes_and_palette(config_src):
     metainfo_start = config_content.find("metainfo = ")
     if metainfo_start == -1:
         raise ValueError("metainfo not found in config content")
-    metainfo_end = config_content.find("])", metainfo_start) + 2
+    metainfo_end = config_content.find(",\n)", metainfo_start) + 3
     metainfo_content = config_content[metainfo_start:metainfo_end]
     metainfo_content = metainfo_content.replace("metainfo = ", "")
     data = eval(metainfo_content)
