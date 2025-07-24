@@ -161,7 +161,7 @@ You can then use the `mmdetection/tools/slurm_pipeline.sh` script to generate a 
 
 The following compute and storage resources are recommended:
 
-- **Compute**: 1 x NVIDIA A100 GPU or better with at least 6GB of free memory, ideally accessed via a SLURM cluster. The training and inference scripts are designed to run on a SLURM cluster, but can be adapted for local use.
+- **Compute**: 1 x NVIDIA A2 GPU or better with at least 6GB of free memory, ideally accessed via a SLURM cluster. The training and inference scripts are designed to run on a SLURM cluster, but can be adapted for local use.
 - **Storage**: At least 3 GB of free disk space for the WSBD, model weights, and code base. Additional space may be required for model outputs and training datasets, depending if you change the patch dataset parameters and/or use your own dataset.
 
 ## 📂 Data Access
