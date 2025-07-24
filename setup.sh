@@ -39,19 +39,28 @@ cp "$SRC/configs/_base_/default_runtime.py" "$DST/configs/_base_/default_runtime
 cp -r "$SRC/tools/." "$DST/tools/"
 
 echo "Downloading the Weddell Sea Bethic Dataset from the Polar Data Centre..."
-echo "NOT YET IMPLEMENTED AS DATA IS NOT PUBLICLY AVAILABLE YET"
+mkdir -p "data"
+wget "https://ramadda.data.bas.ac.uk/repository/entry/show?entryid=1ba97e4b-efb7-460b-9f2d-90437e33ce09&output=zip.tree" -O "data/wsbd.zip"
+unzip -q "data/wsbd.zip"
+rm "data/wsbd.zip"
+# wsbd.zip contains a directory, "The Weddell Sea Benthic Dataset: A computer vision-ready object detection dataset for in situ benthic biodiversity monitoring model development",
+# which has the annotations and images subfolders needed.
+# Move annotations and images to the `data` directory level.
+mkdir -p "data/annotations"
+mkdir -p "data/images"
+mv "The Weddell Sea Benthic Dataset: A computer vision-ready object detection dataset for in situ benthic biodiversity monitoring model development/annotations/"* "data/annotations/"
+mv "The Weddell Sea Benthic Dataset: A computer vision-ready object detection dataset for in situ benthic biodiversity monitoring model development/images/"* "data/images/"
+rm -rf "The Weddell Sea Benthic Dataset: A computer vision-ready object detection dataset for in situ benthic biodiversity monitoring model development"
 
 echo "Downloading the best model weights for the Weddell Sea Benthic Dataset from the Polar Data Centre..."
-echo "NOT YET IMPLEMENTED AS DATA IS NOT PUBLICLY AVAILABLE YET"
+mkdir -p "best_weights"
+wget https://ramadda.data.bas.ac.uk/repository/entry/get/wsbd_model_weights.pth?entryid=synth%3Ab2874f3f-285d-4ae6-9bb4-6bfe3eacbfff%3AL3dzYmRfbW9kZWxfd2VpZ2h0cy5wdGg%3D -O "best_weights/wsbd_model_weights.pth"
 
 echo "Downloading the required initial model weights from the MMDetection model zoo..."
 mkdir -p "openmmlab_pretrained_weights"
 
-# Faster R-CNN: The URL does not have the file name encoded, so rename it after downloading:
-url="https://download.openxlab.org.cn/models/mmdetection/FasterR-CNN/weight/faster-rcnn_r50_fpn_1x_coco"
-filename="faster_rcnn_r50_fpn_1x_coco_20200130-047c8118.pth"
-wget -P "openmmlab_pretrained_weights" "$url"
-mv "openmmlab_pretrained_weights/faster-rcnn_r50_fpn_1x_coco" "openmmlab_pretrained_weights/$filename"
+# Faster R-CNN: The URL does not have the file name encoded, so rename it:
+wget "https://download.openxlab.org.cn/models/mmdetection/FasterR-CNN/weight/faster-rcnn_r50_fpn_1x_coco" -O "openmmlab_pretrained_weights/faster_rcnn_r50_fpn_1x_coco_20200130-047c8118.pth"
 
 wget -P "openmmlab_pretrained_weights" https://download.openmmlab.com/mmdetection/v2.0/retinanet/retinanet_r50_fpn_1x_coco/retinanet_r50_fpn_1x_coco_20200130-c2398f9e.pth
 wget -P "openmmlab_pretrained_weights" https://download.openmmlab.com/mmdetection/v2.0/cascade_rcnn/cascade_rcnn_r50_fpn_1x_coco/cascade_rcnn_r50_fpn_1x_coco_20200316-3dc56deb.pth

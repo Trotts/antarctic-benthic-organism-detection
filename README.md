@@ -40,7 +40,13 @@ An output log, `setup_output.txt`, will be created in the root directory of the 
    cd antarctic-benthic-organism-detection
    ```
 
-2. Run the setup script:
+2. Edit the filepaths in `mmdetection_additions/paths.env` to set the correct paths for your environment. Set:
+
+   `REPOSITORY_PATH` to the path of the cloned repository, e.g., `path/to/antarctic-benthic-organism-detection`.
+   `CACHE_PATH` to a location where temp files can be stored during development.
+   `MINIFORGE_PATH` to the path of your Miniforge installation.
+
+3. Run the setup script:
 
    ```bash
    ./setup.sh
@@ -63,7 +69,13 @@ An output log, `setup_output.txt`, will be created in the root directory of the 
    cd antarctic-benthic-organism-detection
    ```
 
-3. Run the setup script:
+3. Edit the filepaths in `mmdetection_additions/paths.env` to set the correct paths for your environment. Set:
+
+   `REPOSITORY_PATH` to the path of the cloned repository, e.g., `path/to/antarctic-benthic-organism-detection`.
+   `CACHE_PATH` to a location where temp files can be stored during development.
+   `MINIFORGE_PATH` to the path of your Miniforge installation.
+
+4. Run the setup script:
 
    ```bash
    ./setup.sh
@@ -79,36 +91,30 @@ Before using this code base, please familiarise yourself with the MMDetection fr
 
 To run inference using the optimal model trained on the Weddell Sea Benthic Dataset:
 
-1. Edit `mmdetection/tools/paths.env` to set the correct paths for your environment. This file is used by `mmdetection/tools/slurm_best_inference.sh` to set the required paths.
+1. Edit `mmdetection/tools/slurm_best_inference.sh` to set the correct sbatch instructions (lines 7-15).
 
-2. Edit `mmdetection/tools/slurm_best_inference.sh` to set the correct sbatch instructions (lines 7-15).
+2. Set the path to the input image for inference in `mmdetection/tools/slurm_best_inference.sh` (line 18).
 
-3. Set the path to the input image for inference in `mmdetection/tools/slurm_best_inference.sh` (line 18).
+3. (Optional) If you have previously trained your own model and wish to use it here, you will also need to change the config and weights paths in `mmdetection/tools/slurm_best_inference.sh` (lines 23-24), as well as setting the model parameters (lines 28-32). The defaults for these lines are set to the optimal model trained on the Weddell Sea Benthic Dataset.
 
-4. (Optional) If you have previously trained your own model and wish to use it here, you will also need to change the config and weights paths in `mmdetection/tools/slurm_best_inference.sh` (lines 23-24), as well as setting the model parameters (lines 28-32). The defaults for these lines are set to the optimal model trained on the Weddell Sea Benthic Dataset.
+4. Submit the job to SLURM, from the root directory of the repository:
 
-5. Submit the job to SLURM:
-
-```bash
-cd ./mmdetection/tools/
-sbatch slurm_best_inference.sh
-```
+   ```bash
+   sbatch mmdetection/tools/slurm_best_inference.sh
+   ```
 
 ## 🏋️ Training
 
 To run a full training and evaluation pipeline using the Weddell Sea Benthic Dataset:
 
-1. Edit `mmdetection/tools/paths.env` to set the correct paths for your environment. This file is used by `mmdetection/tools/slurm_pipeline.sh` and `mmdetection/tools/build_config.py` to set the required paths.
+1. Edit `mmdetection/tools/slurm_pipeline.sh` to set the correct sbatch instructions (lines 8-16).
 
-2. Edit `mmdetection/tools/slurm_pipeline.sh` to set the correct sbatch instructions (lines 8-16).
+2. Set the parameters you wish use for training in the `mmdetection/tools/slurm_pipeline.sh` file (lines 33-43).
 
-3. Set the parameters you wish use for training in the `mmdetection/tools/slurm_pipeline.sh` file (lines 33-43).
-
-4. Submit the job to SLURM:
+3. Submit the job to SLURM, from the root directory of the repository:
 
 ```bash
-cd ./mmdetection/tools/
-sbatch slurm_pipeline.sh
+sbatch mmdetection/tools/slurm_pipeline.sh
 ```
 
 ### 🐙 Training on your own dataset

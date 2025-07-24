@@ -92,7 +92,8 @@ def main():
     args = parse_args()
 
     # Load environment variables
-    env_vars = load_env_file("./paths.env")
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    env_vars = load_env_file(os.path.join(script_dir, "paths.env"))
     REPOSITORY_PATH = env_vars["REPOSITORY_PATH"]
     MMDETECTION_ROOT = REPOSITORY_PATH + "/mmdetection"
     WEIGHTS_ROOT = REPOSITORY_PATH + "/openmmlab_pretrained_weights"

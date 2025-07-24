@@ -17,7 +17,7 @@
 # Path to an input image for inference
 INPUT_IMAGE_PATH='/PATH/TO/YOUR/INPUT/IMAGE'
 
-source paths.env
+source mmdetection/tools/paths.env
 
 # Path to the config file for the best model
 config_path="${REPOSITORY_PATH}/mmdetection/configs/_base_/models/best_config.py"

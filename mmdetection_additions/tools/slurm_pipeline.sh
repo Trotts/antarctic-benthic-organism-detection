@@ -15,7 +15,7 @@
 #SBATCH --error=job_log/run_pipeline.%j.%N.err 
 #SBATCH --job-name=run_pipeline
 
-source paths.env
+source mmdetection/tools/paths.env
 
 # Path to parent dir for saving models, configs, logs, etc.
 work_dir_path="${REPOSITORY_PATH}/output"
