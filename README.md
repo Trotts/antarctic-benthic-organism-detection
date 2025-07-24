@@ -26,7 +26,7 @@ There are two ways to install this repository: using Git or downloading it as a 
 - Clone and install the MMDetection repository.
 - Merge the required additional files created for this project into MMDetection (see `./mmdetection_additions`).
 - Download the Weddell Sea Bethic Dataset.
-- Download the optimal model weights for the Weddell Sea Benthic Dataset. [TODO: Add in when available on PDC]
+- Download the optimal model weights for the Weddell Sea Benthic Dataset.
 - Download the required model weights from the MMDetection model zoo.
 
 An output log, `setup_output.txt`, will be created in the root directory of the repository. This log contains the output of the setup script, including any errors that may have occurred during installation.
