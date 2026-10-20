@@ -181,7 +181,7 @@ Trotter, C., Griffiths, H. J., Khan, T. M., & Whittle, R. J. (2025). Automated d
 If you use this code, the Weddell Sea Benthic Dataset, or the best model weights in your own research, please cite the following paper:
 
 ```bibtex
-[@INPROCEEDINGS{11374349,
+@INPROCEEDINGS{11374349,
   author={Trotter, Cameron and Griffiths, Huw and Khan, Tasnuva Ming and Whittle, Rowan},
   booktitle={2025 IEEE/CVF International Conference on Computer Vision Workshops (ICCVW)}, 
   title={Automated Detection of Antarctic Benthic Organisms in High-Resolution in Situ Imagery to Aid Biodiversity Monitoring}, 
